@@ -194,13 +194,13 @@ int main(int argc, char** argv) ///main()主函式 進階版
 }
 ```
 ## 瘋狂無敵圖學死亡筆記 Week03
-###0. 開啟 blogger
+### 0. 開啟 blogger
 
-###1. 範例 https://jsyeh.org/3dcg10/
-###1.1 下載 data, win32
+### 1. 範例 https://jsyeh.org/3dcg10/
+### 1.1 下載 data, win32
    windows.zip => 下載\windows\Transformation.exe
    data.zip => 下載\windows\data\模型.obj
-###1.2 執行 Transformation.exe
+### 1.2 執行 Transformation.exe
     (右上)右鍵:換模型
     (下)拖曳綠色的數值
 
@@ -208,7 +208,7 @@ int main(int argc, char** argv) ///main()主函式 進階版
 
 
 
-###2. 學習如何移動
+### 2. 學習如何移動
 ```c++
 #include <GL/glut.h> ///使用GLUT外掛,簡化程式
 void display()
@@ -241,7 +241,7 @@ int main(int argc, char** argv) ///main()主函式 進階版
 
 
 
-###3.1 利用自己寫的myTeapot函式讓人利用x,y為位置座標
+### 3.1 利用自己寫的myTeapot函式讓人利用x,y為位置座標
 ```c++
 void myTeapot(float x, float y){
     glPushMatrix();///備份矩陣(備份舊的位置)
@@ -253,7 +253,7 @@ void myTeapot(float x, float y){
 }
 ```
 
-###3.2 然後讓人呼叫
+### 3.2 然後讓人呼叫
 ```c++
 void display()
 {
@@ -266,7 +266,7 @@ void display()
 }
 ```
 
-###3.3 最後顯示畫面
+### 3.3 最後顯示畫面
 ```c++
 int main(int argc, char** argv) ///main()主函式 進階版
 {
@@ -284,7 +284,7 @@ int main(int argc, char** argv) ///main()主函式 進階版
 
 
 
-###4. 利用glutMouseFunc()函示讓我們接收滑鼠移動的位置然後用 
+### 4. 利用glutMouseFunc()函示讓我們接收滑鼠移動的位置然後用 
 myTeapot((mouseX-150)/150.0,-(mouseY-150)/150.0) ;接收茶壺要移動多少
 
 ```c++
@@ -324,7 +324,7 @@ int main(int argc, char** argv) ///main()主函式 進階版
 
 
 
-###5. 小黑視窗右下為最大(300,300)
+### 5. 小黑視窗右下為最大(300,300)
 
 ```c++
 void mouse(int button, int state, int x, int y){
@@ -334,7 +334,7 @@ void mouse(int button, int state, int x, int y){
 ```
 
 
-###6. 可以利用小畫家得知座標位置或是顏色喔!!!只是顏色要/255.0
+### 6. 可以利用小畫家得知座標位置或是顏色喔!!!只是顏色要/255.0
 ex:
 ```c++
 glColor3f(255/255.0,100/255.0,243/255.0);
