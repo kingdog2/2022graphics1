@@ -193,3 +193,151 @@ int main(int argc, char** argv) ///main()主函式 進階版
     glutMainLoop(); ///主要的程式迴圈
 }
 ```
+## 瘋狂無敵圖學死亡筆記 Week03
+###0. 開啟 blogger
+
+###1. 範例 https://jsyeh.org/3dcg10/
+###1.1 下載 data, win32
+   windows.zip => 下載\windows\Transformation.exe
+   data.zip => 下載\windows\data\模型.obj
+###1.2 執行 Transformation.exe
+    (右上)右鍵:換模型
+    (下)拖曳綠色的數值
+
+
+
+
+
+###2. 學習如何移動
+```c++
+#include <GL/glut.h> ///使用GLUT外掛,簡化程式
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );///畫圖前, 先清畫面
+
+    glPushMatrix();///備份矩陣(備份舊的位置)
+        ///移動會累積,因為它會修改矩陣
+        glTranslatef(0.5,0.5,0);///右上角
+        glColor3f(1,1,0);///黃色
+        glutSolidTeapot(0.3);///茶壺
+    glPopMatrix();///還原矩陣
+
+    glutSwapBuffers();///畫好後,交換出來
+}
+
+int main(int argc, char** argv) ///main()主函式 進階版
+{
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+    glutCreateWindow("第02週的程式"); ///開 GLUT 視窗
+
+    glutDisplayFunc(display); ///用來顯示的函式
+
+    glutMainLoop(); ///主要的程式迴圈
+}
+```
+
+
+
+
+
+###3.1 利用自己寫的myTeapot函式讓人利用x,y為位置座標
+```c++
+void myTeapot(float x, float y){
+    glPushMatrix();///備份矩陣(備份舊的位置)
+        ///移動會累積,因為它會修改矩陣
+        glTranslatef(x,y,0);///右上角
+        glColor3f(1,1,0);///黃色
+        glutSolidTeapot(0.3);///茶壺
+    glPopMatrix();///還原矩陣
+}
+```
+
+###3.2 然後讓人呼叫
+```c++
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );///畫圖前, 先清畫面
+    myTeapot(0.5, 0.5);
+    myTeapot(0.5, -0.5);
+    myTeapot(-0.5, -0.5);
+    myTeapot(-0.5, 0.5);
+    glutSwapBuffers();///畫好後,交換出來
+}
+```
+
+###3.3 最後顯示畫面
+```c++
+int main(int argc, char** argv) ///main()主函式 進階版
+{
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+    glutCreateWindow("第03週的程式:移動)"); ///開 GLUT 視窗
+
+    glutDisplayFunc(display); ///用來顯示的函式
+
+    glutMainLoop(); ///主要的程式迴圈
+}
+```
+
+
+
+
+
+###4. 利用glutMouseFunc()函示讓我們接收滑鼠移動的位置然後用 
+myTeapot((mouseX-150)/150.0,-(mouseY-150)/150.0) ;接收茶壺要移動多少
+
+```c++
+#include <GL/glut.h> ///使用GLUT外掛,簡化程式
+float mouseX=0, mouseY=0;
+void myTeapot(float x, float y){
+    glPushMatrix();///備份矩陣(備份舊的位置)
+        ///移動會累積,因為它會修改矩陣
+        glTranslatef(x,y,0);///右上角
+        glColor3f(1,1,0);///黃色
+        glutSolidTeapot(0.3);///茶壺
+    glPopMatrix();///還原矩陣
+}
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );///畫圖前, 先清畫面
+    myTeapot((mouseX-150)/150.0,-(mouseY-150)/150.0) ;
+    glutSwapBuffers();///畫好後,交換出來
+}
+void mouse(int button, int state, int x, int y){
+    mouseX=x; mouseY=y;
+}
+
+int main(int argc, char** argv) ///main()主函式 進階版
+{
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+    glutCreateWindow("第03週的程式:利用滑鼠移動)"); ///開 GLUT 視窗
+
+    glutDisplayFunc(display); ///用來顯示的函式
+    glutMouseFunc(mouse);
+    glutMainLoop(); ///主要的程式迴圈
+}
+```
+
+
+
+
+
+###5. 小黑視窗右下為最大(300,300)
+
+```c++
+void mouse(int button, int state, int x, int y){
+    printf("%d %d %d %d", button, state, x, y);
+    mouseX=x; mouseY=y;
+}
+```
+
+
+###6. 可以利用小畫家得知座標位置或是顏色喔!!!只是顏色要/255.0
+ex:
+```c++
+glColor3f(255/255.0,100/255.0,243/255.0);
+```
+
+
