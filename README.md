@@ -352,7 +352,7 @@ glColor3f(255/255.0,100/255.0,243/255.0);
 
 
 
-###2. 用程式做(freeglut記得載然後複製改檔名)
+### 2. 用程式做(freeglut記得載然後複製改檔名)
 
 ```c++
 #include <GL/glut.h>
@@ -375,10 +375,10 @@ int main(int argc, char** argv){
 }
 ```
 
-#***git技能
-##git commit -m "修改名稱" --date "2022-03-08 12:00:00"
+# ***git技能
+## git commit -m "修改名稱" --date "2022-03-08 12:00:00"
 
-###3. 用glutMotionFunc()互動讓滑鼠往左右拖能改變angle
+### 3. 用glutMotionFunc()互動讓滑鼠往左右拖能改變angle
 
 ```c++
     #include <GL/glut.h>
@@ -412,12 +412,12 @@ int main(int argc, char** argv){
 
 
 
-#****重點glutMouseFunc() && glutMotionFunc()的差別****
+# ****重點glutMouseFunc() && glutMotionFunc()的差別****
 
-##glutMouseFunc()用點的
-##glutMotionFunc()用拖的
+## glutMouseFunc()用點的
+## glutMotionFunc()用拖的
 
-###4. 旋轉記住oldx位址繼續轉用新x-oldx
+### 4. 旋轉記住oldx位址繼續轉用新x-oldx
 
 ```c++
     #include <GL/glut.h>
@@ -457,7 +457,7 @@ int main(int argc, char** argv){
 
 
 
-###5. 買上點買上畫部用向上次複製貼上
+### 5. 買上點買上畫部用向上次複製貼上
 複習上週教的「用滑鼠寫程式」,,利用mx[]及my[]把座標備份在裡面,配合N記錄有幾個座標。再於display()裡面,利用for迴圈,把這些座標利用GL_LINE_LOOP畫出來看。
 
 ```c++
