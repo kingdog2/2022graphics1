@@ -340,4 +340,164 @@ ex:
 glColor3f(255/255.0,100/255.0,243/255.0);
 ```
 
+## 瘋狂無敵圖學死亡筆記 Week04
+### 1. 今天教旋轉
+
+    glRotatef()
+
+    第一個為旋轉角度有正負(看軸轉)
+
+    二三四為旋轉軸分別代表xyz(自己定義軸)
+
+
+
+
+###2. 用程式做(freeglut記得載然後複製改檔名)
+
+```c++
+#include <GL/glut.h>
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+        glRotatef(90, 0,0,1);
+        glutSolidTeapot(0.3);
+    glPopMatrix();
+    glutSwapBuffers();
+
+}
+int main(int argc, char** argv){
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    glutCreateWindow("Week04 Rotate");
+
+    glutDisplayFunc(display);
+    glutMainLoop();
+}
+```
+
+#***git技能
+##git commit -m "修改名稱" --date "2022-03-08 12:00:00"
+
+###3. 用glutMotionFunc()互動讓滑鼠往左右拖能改變angle
+
+```c++
+    #include <GL/glut.h>
+    float angle=0;
+    void display(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glPushMatrix();///備份矩陣
+            glRotatef(angle, 0,0,1);
+            glutSolidTeapot(0.3);
+        glPopMatrix();///還原矩陣
+        glutSwapBuffers();
+
+    }
+    void motion(int x, int y){
+        angle=x;
+        display();///重畫畫面
+
+    }
+    int main(int argc, char** argv){
+        glutInit(&argc, argv);
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+        glutCreateWindow("Week04 Rotate");
+
+        glutDisplayFunc(display);
+        glutMotionFunc(motion);///mouse motion動
+        glutMainLoop();
+
+    }
+```
+
+
+
+
+#****重點glutMouseFunc() && glutMotionFunc()的差別****
+
+##glutMouseFunc()用點的
+##glutMotionFunc()用拖的
+
+###4. 旋轉記住oldx位址繼續轉用新x-oldx
+
+```c++
+    #include <GL/glut.h>
+    float angle=0, oldx=0;
+    void display(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glPushMatrix();///備份矩陣
+            glRotatef(angle, 0,0,1);
+            glutSolidTeapot(0.3);
+        glPopMatrix();///還原矩陣
+        glutSwapBuffers();
+
+    }
+    void motion(int x, int y){///拖的時候要跑
+        angle+=(x-oldx);
+        oldx=x;///拖的也有座標再跑
+        display();///重畫畫面
+
+    }
+    void mouse(int button, int state, int x, int y){///按、放要跑
+        oldx=x;///定錨
+
+    }
+    int main(int argc, char** argv){
+        glutInit(&argc, argv);
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+        glutCreateWindow("Week04 Rotate");
+
+        glutDisplayFunc(display);
+        glutMotionFunc(motion);///mouse motion動
+        glutMouseFunc(mouse);///按下、放開
+        glutMainLoop();
+
+
+    }
+```
+
+
+
+###5. 買上點買上畫部用向上次複製貼上
+複習上週教的「用滑鼠寫程式」,,利用mx[]及my[]把座標備份在裡面,配合N記錄有幾個座標。再於display()裡面,利用for迴圈,把這些座標利用GL_LINE_LOOP畫出來看。
+
+```c++
+///上週的複習
+#include <GL/glut.h>
+#include <stdio.h>
+int mx[1000],my[1000];///用來備份你的mouse的座標
+int N=0;///有幾個點按好了?
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glBegin(GL_LINE_LOOP);
+    for(int i=0; i<N; i++){
+        glVertex2f( (mx[i]-150)/150.0, -(my[i]-150)/150.0 );
+    }
+    glEnd();
+    glutSwapBuffers();
+}
+void mouse(int button, int state, int x, int y)
+{//  printf("%d %d %d %d\n", button, state, x, y);
+    if(state==GLUT_DOWN){///如果state是按下去0,才印程式碼
+        printf("    glVertex2f( (%d-150)/150.0, -(%d-150)/150.0 );\n", x, y);
+        N++;
+        mx[N-1]=x; my[N-1]=y;
+    }
+    display();///重畫
+}
+int main(int argc, char**argv)
+{
+    glutInit( &argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    glutCreateWindow("Week04 Rotate");
+
+    glutDisplayFunc(display);
+    glutMouseFunc(mouse);///上週教: mouse按下去、放開來
+    glutMainLoop();
+}
+```
+
+
+
+
 
