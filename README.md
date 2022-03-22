@@ -340,6 +340,7 @@ ex:
 glColor3f(255/255.0,100/255.0,243/255.0);
 ```
 
+
 ## 瘋狂無敵圖學死亡筆記 Week04
 ### 1. 今天教旋轉
 
@@ -498,6 +499,237 @@ int main(int argc, char**argv)
 ```
 
 
+
+## week05
+### 0. 移動、旋轉、縮放、矩陣
+
+### 1.  學習如何用鍵盤
+
+## ***輸入中文會被os擋住
+
+
+```c++
+#include <GL/glut.h>
+
+#include <stdio.h>
+
+void display(){
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glColor3f(1,1,0);
+
+    glutSolidTeapot(0.3);
+
+    glutSwapBuffers();
+
+}
+
+void keyboard(unsigned char key, int x, int y){///輸入中文會被os擋住
+
+    printf("你按下了%c滑鼠在%d%d座標\n",key,x,y);
+
+}
+
+int main(int argc, char** argv) ///main()主函式 進階版
+
+{
+
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+
+    glutCreateWindow("week05 keyboard");
+
+
+
+    glutDisplayFunc(display);
+
+    glutKeyboardFunc(keyboard);///今天主角
+
+    glutMainLoop(); ///主要的程式迴圈
+
+}
+```
+
+
+
+
+
+2. 學會用keyboard跟mouse與motion結合
+
+
+```c++
+#include <GL/glut.h>
+
+#include <stdio.h>
+
+float x=150, y=150, z=0;///讓圖在中心
+
+int oldX=0, oldY=0;
+
+
+
+void display(){
+
+     
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+
+    glPushMatrix();///備份矩陣
+
+        glTranslatef((x-150)/150.0,-(y-150)/150.0,z);
+
+        glColor3f(1,1,0);///黃色
+
+        glutSolidTeapot(0.3);
+
+
+
+    glPopMatrix();///還原矩陣
+
+    glutSwapBuffers();
+
+}
+
+
+
+void keyboard(unsigned char key, int mouseX, int mouseY){///輸入中文會被os擋住
+
+    printf("你按下了%c滑鼠在%d%d座標\n", key, mouseX, mouseY);
+
+}
+
+
+
+void mouse(int button, int state, int mouseX, int mouseY){
+
+    ///為了解決瞬間移動的問題,改用延續拖移
+
+    oldX=mouseX;
+
+    oldY=mouseY;
+
+}
+
+
+
+void motion(int mouseX,int mouseY){
+
+    x+=(mouseX-oldX);
+
+    y+=(mouseY-oldY);
+
+    oldX=mouseX;
+
+    oldY=mouseY;
+
+    display();///重畫
+
+}
+
+
+
+int main(int argc, char** argv) ///main()主函式 進階版
+
+{
+
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+
+    glutCreateWindow("week05 keyboard");
+
+
+
+    glutDisplayFunc(display);
+
+    glutKeyboardFunc(keyboard);///今天主角
+
+    glutMouseFunc(mouse);///第一代主角
+
+    glutMotionFunc(motion);///第二代主角
+
+    glutMainLoop(); ///主要的程式迴圈
+
+}
+```
+
+
+
+
+
+
+3. 滑鼠x左右放大縮小
+
+```c++
+#include <GL/glut.h>
+#include <stdio.h>
+float x=150, y=150, z=0, scale=1.0;
+int oldX=0, oldY=0;
+
+void display(){
+    glClearColor(0.5, 0.5, 0.5, 1);///RGBA(A為透明)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glPushMatrix();///備份矩陣
+        glTranslatef((x-150)/150.0,-(y-150)/150.0,z);
+        glScalef(scale, scale, scale);///都縮放成scale倍
+        glColor3f(1,1,0);///黃色
+        glutSolidTeapot(0.3);
+
+    glPopMatrix();///還原矩陣
+    glutSwapBuffers();
+}
+
+void keyboard(unsigned char key, int mouseX, int mouseY){///輸入中文會被os擋住
+    printf("你按下了%c滑鼠在%d%d座標\n", key, mouseX, mouseY);
+}
+
+void mouse(int button, int state, int mouseX, int mouseY){
+    ///為了解決瞬間移動的問題,改用延續拖移
+    oldX=mouseX;
+    oldY=mouseY;
+}
+
+void motion(int mouseX,int mouseY){
+    if(mouseX-oldX>0) scale *=1.01;///縮放
+    if(mouseX-oldX<0) scale *=0.99;
+    /*x+=(mouseX-oldX);
+    y+=(mouseY-oldY);*/
+    oldX=mouseX;
+    oldY=mouseY;
+    display();///重畫
+}
+
+int main(int argc, char** argv) ///main()主函式 進階版
+{
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+    glutCreateWindow("week05 keyboard");
+
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);///今天主角
+    glutMouseFunc(mouse);///第一代主角
+    glutMotionFunc(motion);///第二代主角
+    glutMainLoop(); ///主要的程式迴圈
+}
+```
+
+
+
+
+## ***gist(git的功能能分享程式碼)且blogger右上有html視略
+
+
+
+
+
+
+
+## 把gist連結放在blogger的html視略下面
 
 
 
