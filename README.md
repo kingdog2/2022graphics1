@@ -72,6 +72,13 @@ git commit -m "訊息"
 4.2. git push 推送上雲端
 (Chrome 要登入才行)
 
+
+
+
+
+
+
+
 ## 瘋狂無敵圖學死亡筆記 Week02
 1.  下載範例 https://jsyeh.org/3dcg10
 
@@ -193,6 +200,12 @@ int main(int argc, char** argv) ///main()主函式 進階版
     glutMainLoop(); ///主要的程式迴圈
 }
 ```
+
+
+
+
+
+
 ## 瘋狂無敵圖學死亡筆記 Week03
 ### 0. 開啟 blogger
 
@@ -339,6 +352,11 @@ ex:
 ```c++
 glColor3f(255/255.0,100/255.0,243/255.0);
 ```
+
+
+
+
+
 
 
 ## 瘋狂無敵圖學死亡筆記 Week04
@@ -497,6 +515,10 @@ int main(int argc, char**argv)
     glutMainLoop();
 }
 ```
+
+
+
+
 
 
 
