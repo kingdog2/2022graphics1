@@ -778,7 +778,7 @@ glLightfv(GL_LIGHT0,GL_POSITION,陣列)
 
 ### 1.
 
-***Ctrl-F找light偷下面程式
+##***Ctrl-F找light偷下面程式
 
 ```c++
 const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
