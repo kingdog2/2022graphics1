@@ -1037,7 +1037,7 @@ int main(int argc,char** argv)
 ### 2.all用移動mouse、keyboard、motion
 用鍵盤輸入要控制移動、旋轉還是縮放
 
-
+```c++
 #include <GL/glut.h>
 const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
 const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
