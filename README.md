@@ -1130,6 +1130,266 @@ int main(int argc,char** argv)
     glutMainLoop(); ///主要的程式迴圈
 }
 ```
+## 瘋狂無敵圖學死亡筆記 Week08
+
+### 了解OBJ模型檔 (v vt vn f)、介紹glm.h glm.cpp (c)與.cbp專案 .obj物件 .mtl材質 
 
 
 
+### 0.  jsyeh.org/3dcg10 下載
+
+windows.zip => 下載\windows\Light Material.exe
+
+data.zip    => 下載\windows\data\ 3D模型
+
+source.zip 
+
+執行 Light Material.exe 今天的主角(打光/模型)
+
+
+
+### 0-1. freeglut Moodle下載/安裝, lib\libglut32.a
+
+File-New-Project, GLUT專案, 偷它的程式 放 Notepad++
+
+GLUT callback 像是 display() mouse() motion() keyboard(), 有期中考題,像是 glPushMatrix()等, 重點是打光的陣列、打光的函式.zip
+
+
+
+
+
+#include <GL/glut.h>
+
+
+
+GLUT callback ? 會被 GLUT 呼叫的函式
+
+我們寫的那些display() keyboard() mouse() motion()函式
+
+
+
+
+
+### 0-2. 從 GitHub 拿出上週的程式!!! week06_light 
+
+git 下載你上週的程式
+
+git clone 下來 或在你的專案資料夾裡 git pull
+
+把 week06_light\main.cpp 用 Notepad++ 開起來, copy
+
+paste 到 week08_model 的 main.cpp
+
+執行,會看到打光的黃色茶壼
+
+
+
+
+
+### 0-3. 把 source.zip 看裡面的3個程式 glm.h glm.c lightmaterial.cpp, 拿裡面的程式來用,便能讀入3D模型
+
+
+
+
+### 0-4. 把 source.zip 看裡面的3個程式 glm.h glm.c 研究 lightmaterial.cpp, 拿裡面的程式來用,便能讀入3D模型, 要include 雙引號的 glm.h 要把 glm.c改檔名成glm.cpp 並加入專案, 再用 Notepad++研究學習lightmaterial.c的程式內容 .zip
+
+
+
+1. glm.h 我們要 include 它
+
+2. glm.c 改檔名 glm.cpp 要加入專案
+
+3. lightmaterial.cpp 用 Notepad++ 偷
+
+
+```c++
+#include <GL/glut.h> //角括號,是系統的include裡 的檔案
+
+#include "glm.h" //雙引號,同目錄裡 的檔案
+
+
+
+
+
+GLMmodel* pmodel = NULL; //指到GLMmodel模型的指標,NULL代表還沒好
+
+
+
+
+
+void drawmodel(void)
+
+{
+
+    if (!pmodel) {
+
+	pmodel = glmReadOBJ("data/soccerball.obj");
+
+	if (!pmodel) exit(0);
+
+	glmUnitize(pmodel);
+
+	glmFacetNormals(pmodel);
+
+	glmVertexNormals(pmodel, 90.0);
+
+    }
+
+
+
+    glmDraw(pmodel, GLM_SMOOTH);
+
+}///用來畫3D模型的程式碼, "學習它"
+```
+
+
+
+
+### 2. 畫 3D 模型檔
+
+把 glutSolidTeapot()改成畫 drawmodel(), 要在CodeBlocks下方 藍色Build Log 找你的 working dir 工作目錄:(in C:\Users\...\Desktop\freeglut\bin\)目錄, 在裡面放 data資料夾, 以便讀取 data裡的模型, 再把glm.cpp 及 glm.h 放在 week08_model 目錄中, 再 Add files 把 glm.cpp 加到專案中
+
+
+
+
+
+### 2-1. 各種模形都可以放在專案 week08_model (記得File-Save Project存檔, 放到 GitHub 裡)
+
+
+
+### 2-2. 介紹3D模型相關資料
+
+1. Wavefront OBJ 檔 https://zh.wikipedia.org/wiki/Wavefront_.obj%E6%96%87%E4%BB%B6
+
+2. Wavefront OBJ 英文介紹較詳細https://en.wikipedia.org/wiki/Wavefront_.obj_file
+
+3. OBJ vs. MTL 檔
+
+4. v 是 vertex, vn 是 vertex normal, vt 是 vertex texture貼圖 coordinate, f 是 face 面
+
+
+
+### 3. 期中考 OpenGL 必背10函式
+```c++
+  glPushMatrix(); //備份矩陣
+
+   glTranslatef(x,y,z);//移動
+
+    glRotatef(角度, x,y,z);//轉動
+
+    glScalef(x,y,z);//縮放
+
+   glBegin(GL_POLYGON);//開始畫
+
+     glColor3f(r,g,b);//色彩
+
+      glTexCoord2f(tx, ty);//貼圖座標
+
+      glNormal3f( nx,ny,nz);//打光法向量
+
+      glVertex3f(x,y,z);//頂點
+
+  glEnd();//結束畫
+  
+glPopMatrix(); //還原矩陣
+```
+## 瘋狂無敵圖學死亡筆記 Week09
+### 0.貼圖座標glTexCoord2f(tx,ty)
+
+
+glTexCoord2f(0.0,0.0)由左下開始(逆時針跑)
+(0.0,1.0)    <---    (1.0,1.0)
+
+                                ^
+
+(0.0,0.0)     --->   (1.0,0.0)
+
+### 1.OpenCV讀圖、秀圖 OpenCV 2.1.0 vs2008 版
+
+安裝時注意事項
+
+(1)選第二個 add PATH(程式執行會去找exe或dll的目錄路徑)
+
+(2)預設目錄
+
+# ***bin include lib
+
+bin二進位執行檔
+
+include外掛
+
+### 2.存成week09_opencv.cpp
+
+```c++
+
+#include <opencv/highgui.h>//使用opencv外掛
+
+int main(){
+
+///Ipl:Intel perfromance library
+
+    IplImage *img =cvLoadImage("檔名.png"); //讀檔
+
+    cvShowImage("Week09", img);  //秀圖
+
+    cvWaitKey( 0 ); //等待任意鍵繼續
+
+}
+
+```
+
+
+
+
+
+
+### 2-1.設定Setting-Comiler設定 Include 目錄
+
+### 2-2.設定Setting-Comiler設定 Lib 目錄
+
+Search Directories
+
+  (Compiler) 對應Include目錄 c:\opencv2.1\include
+
+  (Linker) 對應Lib目錄 c:\opencv2.1\lib
+
+### 2-3.設定Setting-Comiler設定 咒語 Linker Settings加入 cv210、cxcore210、highgui210
+
+
+
+
+### 3. 結合OpenCV 和 OpenGL 把10行茶壺glut+3-5行opnecv讀圖秀圖
+```c++
+#include <GL/glut.h> ///使用GLUT外掛,簡化程式
+#include <opencv/highgui.h>
+
+void myTextrue(){
+     Iplmage *img = cvLoadImage("檔案.png"); //讀檔
+
+    cvShowImage("Week09", img);  //秀圖
+
+    ///cvWaitKey( 0 ); //需要按任意見才能讓茶壺到glutMainLoop(),可以不用寫,因為有glutMainLoop()
+}
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );///畫圖前, 先清畫面
+    glutSolidTeapot(0.3); ///實心的茶壼
+
+    glutSwapBuffers();///畫好後,交換出來
+}
+
+int main(int argc, char** argv) ///main()主函式 進階版
+{
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+    glutCreateWindow("第02週的程式哦!"); ///開 GLUT 視窗
+
+    glutDisplayFunc(display); ///用來顯示的函式
+    myTextrue();///執行這視窗
+
+    glutMainLoop(); ///主要的程式迴圈
+}
+```
+
+
+### 3-1圖檔放在 工作目錄 (in C:\Users\User\Desktop\freeglut\bin)
