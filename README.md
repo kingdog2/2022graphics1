@@ -1394,7 +1394,7 @@ int main(int argc, char** argv) ///main()主函式 進階版
 
 ### 3-1圖檔放在 工作目錄 (in C:\Users\User\Desktop\freeglut\bin)
 
-## 瘋狂無敵圖學死亡筆記 Week01
+## 瘋狂無敵圖學死亡筆記 Week10
 ### 0.用上週改為圖在茶壺上 
 ```c++
 #include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
@@ -1457,15 +1457,10 @@ int main(int argc, char**argv){
 }
 ```
 ### 1.背景
-
-#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
-
-#include <opencv/cv.h>
-
-#include <GL/glut.h>
-
-
 ```c++
+#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
+#include <opencv/cv.h>
+#include <GL/glut.h>
 int myTexture(char * filename)
 
 {
