@@ -1698,6 +1698,206 @@ int main(int argc, char**argv){
     3.工作目錄在 (in C:\Users\User\Desktop\freeglut\bin)
     4.glm.h glm.cpp放在專案main.cpp旁邊
     5.利用上面地球模型改
+    
+## 瘋狂無敵圖學死亡筆記 Week11
+### 0.做鋼彈 
 
+### 0-1. 把鋼彈資料夾裡的data放在工作目錄裡，即可用鋼彈貼圖
+
+
+
+
+### 0-1. 讀完圖試把圖貼在茶壺上
+```c++
+#include <opencv/highgui.h>
+#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
+#include <opencv/cv.h>
+#include <GL/glut.h>
+int myTexture(char * filename)
+{
+    IplImage * img = cvLoadImage(filename);
+    cvCvtColor(img,img, CV_BGR2RGB);
+    glEnable(GL_TEXTURE_2D);
+    GLuint id;
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
+    return id;
+}
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glutSolidTeapot(0.3);
+    glutSwapBuffers();
+}
+int main(int argc, char** argv)
+{
+    glutInit( &argc, argv);
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH );
+    glutCreateWindow("第11週的程式哦!");
+
+    glutDisplayFunc(display);
+    myTexture("data/Diffuse.jpg");
+    glutMainLoop();
+}
+```
+
+
+### 1. glm模型練型:把模型讀進來，畫出來
+### 1-1. source.zip的一些檔案傳入專案
+
+
+### 1-2. 把glm.c改成.cpp
+
+
+
+### 1-3. 讀鋼彈模型與鋼彈貼圖並套用
+```c++
+#include <opencv/highgui.h>
+#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
+#include <opencv/cv.h>
+#include <GL/glut.h>///這是電腦裡要設定include
+#include "glm.h"///這是導入專案目錄裡的
+GLMmodel * pmodel =NULL;
+int myTexture(char * filename)
+{
+    IplImage * img = cvLoadImage(filename);
+    cvCvtColor(img,img, CV_BGR2RGB);
+    glEnable(GL_TEXTURE_2D);
+    GLuint id;
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
+    return id;
+}
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    if(pmodel == NULL){///如果是空指標，表示模型沒有準備好
+        pmodel=glmReadOBJ("data/Gundam.obj");///就讀模型
+        glmUnitize(pmodel);///換算成Unit單位大小 -1........1
+        glmFacetNormals(pmodel);///重新計算面的法向量
+        glmVertexNormals(pmodel,90);///重新計算的頂點的法向量
+    }
+    glmDraw(pmodel, GLM_TEXTURE);///有模型後,畫面,要記得畫貼圖
+    glutSwapBuffers();
+}
+int main(int argc, char** argv)
+{
+    glutInit( &argc, argv);
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH );
+    glutCreateWindow("第11週的程式哦!");
+
+    glutDisplayFunc(display);
+    myTexture("data/Diffuse.jpg");
+    glutMainLoop();
+}
+```
+### 1-4. 上圖鋼彈模型有點前後壓扁
+### 1.便3d
+### 2.轉動它
+```c++
+#include <opencv/highgui.h>
+#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
+#include <opencv/cv.h>
+#include <GL/glut.h>///這是電腦裡要設定include
+#include "glm.h"///這是導入專案目錄裡的
+GLMmodel * pmodel =NULL;
+int myTexture(char * filename)
+{
+    IplImage * img = cvLoadImage(filename);
+    cvCvtColor(img,img, CV_BGR2RGB);
+    glEnable(GL_TEXTURE_2D);
+    GLuint id;
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
+    return id;
+}
+float angle=0;
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    if(pmodel == NULL){///如果是空指標，表示模型沒有準備好
+        pmodel=glmReadOBJ("data/Gundam.obj");///就讀模型
+        glmUnitize(pmodel);///換算成Unit單位大小 -1........1
+        glmFacetNormals(pmodel);///重新計算面的法向量
+        glmVertexNormals(pmodel,90);///重新計算的頂點的法向量
+    }
+
+    glPushMatrix();
+        glRotatef(angle,0,1,0);///全身一起轉
+        glmDraw(pmodel, GLM_TEXTURE);///有模型後,畫面,要記得畫貼圖
+    glPushMatrix();
+
+    glutSwapBuffers();
+    angle+=0.00001;
+}
+int main(int argc, char** argv)
+{
+    glutInit( &argc, argv);
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH );
+    glutCreateWindow("第11週的程式哦!");
+
+    glutIdleFunc(display);///有空呼叫display
+    glutDisplayFunc(display);
+    myTexture("data/Diffuse.jpg");
+    glEnable(GL_DEPTH_TEST);///3D
+
+    glutMainLoop();
+}
+```
+### 2.可用maya切模型讓個別部位做旋轉
+### 2-1.把各部位接起來
+### 2-2 茶壺當手腳，並讓手轉動
+```c++
+#include <GL/glut.h> ///使用GLUT外掛,簡化程式
+void hand(){
+    glColor3f(0,1,0);
+    glutSolidTeapot(0.2);
+}
+void body(){
+    glColor3f(1,1,0);
+    glutSolidTeapot(0.3);
+}
+float angle=0;
+void display()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );///畫圖前, 先清畫面
+    body();
+    glPushMatrix();
+        glTranslatef(0.5,0.2,0);
+        glRotatef(angle,0,0,1);
+        glTranslatef(0.3,0,0);
+        hand();
+    glPopMatrix();
+    glutSwapBuffers();///畫好後,交換出來
+    angle+=0.05;
+}
+
+int main(int argc, char** argv) ///main()主函式 進階版
+{
+    glutInit( &argc, argv); ///把參數,送給 glutInit 初始化
+    glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH ); ///雙緩衡區 + 3D深度功能
+    glutCreateWindow("week11 組裝頭手讓手轉動"); ///開 GLUT 視窗
+
+    glutIdleFunc(display);
+    glutDisplayFunc(display); ///用來顯示的函式
+
+    glutMainLoop(); ///主要的程式迴圈
+}
+```
 
 
