@@ -74,7 +74,7 @@ git commit -m "訊息"
 (Chrome 要登入才行)
 
 
-***git start .開啟目前位置
+***start .開啟目前位置
 
 
 
