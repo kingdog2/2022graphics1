@@ -52,6 +52,7 @@
 3. 開啟 Git Bash
 3.1. cd desktop 進入桌面
 3.2. git clone http://你的網址
+	(***之前有clone過用git pull從雲端上拉到你的(本地)倉庫***)
 3.3. cd 2022graphics1
 
 3.4. 把我們的2個程式目錄,放到2022graphics1
@@ -73,7 +74,7 @@ git commit -m "訊息"
 (Chrome 要登入才行)
 
 
-
+***git start .開啟目前位置
 
 
 
