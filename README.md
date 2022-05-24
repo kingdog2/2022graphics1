@@ -68,7 +68,7 @@ git config --global user.email "jsyeh@mail.mcu.edu.tw"
 git config --global user.name "jsyeh"
 
 
-git commit -m "訊息"
+git commit -m "訊息" --date "2022-03-08 12:00:00"
 
 4.2. git push 推送上雲端
 (Chrome 要登入才行)
