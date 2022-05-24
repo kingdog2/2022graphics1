@@ -2208,4 +2208,61 @@ int main(int argc, char *argv[])
     glutMainLoop();
 }
 ```
+## 瘋狂無敵圖學死亡筆記 Week14
+### 0.  寫檔、讀檔
 
+### 0-1. 寫檔 
+
+fopen()開啟
+
+fprintf()寫入
+
+fclose()關閉檔案
+
+
+
+### 0-2. 讀檔
+
+fopen()開啟
+
+fscanf()讀取
+
+fclose()關閉檔案
+
+
+
+### 1. 利用week13加入檔案功能
+
+### 2.動畫將移動資料存進file.txt然後讀檔做同樣動作
+
+
+
+### 3.原來工作目錄在freeglut\bin裡面想必file.txt也在那，但我們想改工作目錄在專案裡如下:
+
+### 3-0. 因為GLUT專案要用freeglut.dll所以工作目錄(working_dir)自動被設置到freeglut\bin裡面
+
+### 3-1. 在.cbp 專案檔裡 有工作目錄的設定用notepad++改.cbp的working_dir為專案下"."
+
+
+
+
+
+### 3-2. 改完工作目錄位置再來因為GLUT專案要用freeglut.dll所以要將freeglut裡的freeglut.dll複製過來
+
+
+
+
+### 4. 按r因為每個人鍵盤設不同，有快有慢
+glutTimeFunc() 計時器
+
+### 4-1. void timer(int t) 寫timer函式
+### 4-2. glutTimeFunc(等多久,timer,參數t)
+
+
+### 4-3. 設計一個5秒開始之後都1秒繼續(無窮)
+
+
+
+### 5. 播放聲音 PlaySound() 
+### 5-1. 首先要#include <mmsystem.h>
+### 5-2. 也要有.wav音檔,以下用do.wav為例
