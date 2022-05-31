@@ -2266,3 +2266,186 @@ glutTimeFunc() 計時器
 ### 5. 播放聲音 PlaySound() 
 ### 5-1. 首先要#include <mmsystem.h>
 ### 5-2. 也要有.wav音檔,以下用do.wav為例
+## 瘋狂無敵圖學死亡筆記 Week15
+### 0. PLaySound()    wav檔案
+
+兩個函式庫#include <mmsystem.h>&#inlcude <windows.h>
+
+//PlaySound("檔名.wav", NULL, SND_ASYNC); //上週,不等待,不同步
+
+PlaySound("檔名.wav", NULL, SND_SYNC); //本週,等待,同步
+
+
+
+## ***問題 Setting-Compiler Setting ,    Linker 加入 winmm
+
+
+
+再來是把wav檔案放工作目錄
+```c++
+#include <windows.h>
+#include <stdio.h>
+int main(){
+    printf("PlaySound()before\n");
+        //檔案不存在,會有很小聲的錯誤聲音
+    PlaySound("badbad.wav", NULL, SND_SYNC);
+    printf("PlaySound()after\n");
+}
+```
+SND_SYNC&&SND_ASYNC差別
+
+等待會等播完才結束
+
+不等待可互動
+
+```c++
+#include <windows.h>
+#include <stdio.h>
+int main(){
+    while(1){
+        printf("Input The Number:");
+        int N;
+        scanf("%d", &N);
+        if(N==1)PlaySound("do.wav",NULL,SND_ASYNC);
+        if(N==2)PlaySound("re.wav",NULL,SND_ASYNC);
+        if(N==3)PlaySound("mi.wav",NULL,SND_ASYNC);
+    }
+}
+```
+
+### 1.  MP3(小/有壓縮加密)會亂碼.wav(大/原始) 內容不一樣
+CMP3_MCI.h 這個檔可以在 #include "CMP3_MCI.h" 後, 解鎖 mp3.Play()功能
+```c++
+#include <stdio.h>
+#include "CMP3_MCI.h" ///記得要下載，同目錄中
+CMP3_MCI mp3;
+int main(){
+    mp3.Load("07042111.mp3");
+    mp3.Play();
+
+    printf("Input:");
+    int N;
+    scanf("%d", &N);
+}
+```
+
+
+### 2. 沿用week14_angle_fprintf_fscanf
+原本是邊做邊存動作(然後按r讀)
+修改為按s才存檔
+```c++
+///改week14_angle_fprintf_fscanf動畫按r回放
+#include <GL/glut.h>
+#include <stdio.h>
+float angle[20]={0},
+oldX=0;///陣列在外定義會自動設為0
+int angleID=0;///幾號關節
+///檔案功能
+FILE *fout = NULL, *fin = NULL;
+void myWrite(){
+    if(fout == NULL)
+        fout = fopen("file.txt", "w");
+    for(int i=0;i<20;i++){
+        printf("%.1f", angle[i]); ///小黑印出來
+        fprintf(fout ,"%.1f", angle[i]); ///檔案印出來
+    }
+    printf("\n");
+    fprintf(fout, "\n");
+}
+void myRead(){
+    if(fout != NULL){
+        fclose(fout);
+        fout = NULL;
+    }
+    if(fin == NULL)
+            fin = fopen("file.txt","r");
+    for(int i=0;i<20;i++){
+        fscanf(fin , "%f", &angle[i]);
+    }
+    glutPostRedisplay(); ///重劃畫面
+}
+void keyboard(unsigned char key,int x, int y){
+    if(key=='s')myWrite();///調好動作按s才存檔
+    if(key=='r')myRead();
+    if(key=='0')angleID=0;
+    if(key=='1')angleID=1;
+    if(key=='2')angleID=2;
+    if(key=='3')angleID=3;
+}
+void mouse(int button, int state, int x,int y){
+    oldX=x;
+}
+void motion(int x, int y){
+    angle[angleID]+=(x-oldX);
+    ///myWrite();
+    oldX=x;
+    glutPostRedisplay();///請glut重畫畫面
+}
+void display(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1,1,1);
+    glRectf(0.3,0.5,-0.3,-0.5);
+    glPushMatrix();///右半
+        glTranslatef(0.3,0.4,0);///(3)把手臂掛回身體原位T
+        glRotatef(angle[0],0,0,1);///(2)向Z軸旋轉R
+        glTranslatef(-0.3,-0.4,0);///(1)把手臂的旋轉中心，放世界中心(0,0)T
+        glColor3f(1,0,0);
+        glRectf(0.3,0.5,0.7,0.3);
+
+        glPushMatrix();///手軸
+            glTranslatef(0.7,0.4,0);
+            glRotatef(angle[1],0,0,1);
+            glTranslatef(-0.7,-0.4,0);
+            glColor3f(0,1,0);
+            glRectf(0.7,0.5,1.0,0.3);
+        glPopMatrix();
+    glPopMatrix();
+
+    glPushMatrix();///左半
+        glTranslatef(-0.3,0.4,0);///(3)把手臂掛回身體原位T
+        glRotatef(angle[2],0,0,1);///(2)向Z軸旋轉R
+        glTranslatef(0.3,-0.4,0);///(1)把手臂的旋轉中心，放世界中心(0,0)T
+        glColor3f(1,0,0);
+        glRectf(-0.3,0.5,-0.7,0.3);
+
+        glPushMatrix();///手軸
+            glTranslatef(-0.7,0.4,0);
+            glRotatef(angle[3],0,0,1);
+            glTranslatef(0.7,-0.4,0);
+            glColor3f(0,1,0);
+            glRectf(-0.7,0.5,-1.0,0.3);
+        glPopMatrix();
+    glPopMatrix();
+    glutSwapBuffers();
+}
+int main(int argc, char *argv[])
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitWindowSize(600,600);
+    glutCreateWindow("week15 again");
+
+    glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
+    glutDisplayFunc(display);
+    glutMainLoop();
+}
+```
+### 3.機器人擺動做
+
+#### 3-1.    3Dodel(glm.h glm.cpp)
+
+#### 3-2.    模型切塊分別讀入
+
+#### 3-3.    TRT,轉動
+
+#### 3-4.    keyboard()切換關節, mouse() motion()轉動那一個關節
+
+#### 步驟:改工作目錄到自己資料夾裡(函freeglut.dll) .cbp裡working_dir="."
+
+glm.h    glm.cpp及gundam的data目錄也放入
+
+並且如圖
+
