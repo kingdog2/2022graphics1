@@ -2449,3 +2449,217 @@ glm.h    glm.cpp及gundam的data目錄也放入
 
 並且如圖
 
+## 瘋狂無敵圖學死亡筆記 Week16
+### 0. alpha內插公式 alpha: 0.0~1.1
+
+angle =alpha*新+(1-alpha)*舊
+
+### 1.動畫(灰色為不自動以註解掉)
+```c++
+#include <GL/glut.h>
+#include <stdio.h>
+
+float angle[20], oldX=0;
+int angleID=0;
+FILE * fout =NULL,*fin=NULL;
+void myWrite(){
+    if(fout==NULL)
+        fout=fopen("file.txt,","w+");
+
+    for(int i=0;i<20;i++){
+        printf(" %.1f ",angle[i]);
+        fprintf(fout," %.1f ",angle[i]);
+    }
+    printf("\n");
+    fprintf(fout,"\n");
+}
+float NewAngle[20],OldAngle[20];
+void myRead(){
+    if(fout!=NULL){fclose(fout);fout=NULL;}
+    if(fin==NULL)fin=fopen("file.txt,","r");
+    for(int i=0;i<20;i++){
+        OldAngle[i]=NewAngle[i];
+        fscanf(fin," %f ",&NewAngle[i]);
+        ///fscanf(fin," %f ",&angle[i]);
+    }
+    glutPostRedisplay();
+}
+///內差公式
+void myinterpolate(float alpha){
+    for(int i=0;i<20;i++){
+        angle[i] = alpha *NewAngle[i] + (1-alpha)*OldAngle[i];
+    }
+}
+//int t=0;
+void timer(int t){///自動播放
+    if(t%50==0) myRead();
+    myinterpolate((t%50)/50.0);///動畫aplha0~1
+    glutPostRedisplay();
+    glutTimerFunc(20,timer,t+1);
+}
+void keyboard(unsigned char key,int x,int y)
+{
+    if(key=='p'){
+        myRead();
+        glutTimerFunc(0,timer,0);///自動播放
+        /*//t介於0~30無自動
+        if(t%30==0) myRead();
+        myinterpolate((t%30)/30.0);///動畫aplha0~1
+        glutPostRedisplay();///重畫
+        t++;*/
+    }
+    if(key=='s') myWrite();///調好動作才存
+    if(key=='r') myRead();
+    if(key=='0') angleID=0;
+    if(key=='1') angleID=1;
+    if(key=='2') angleID=2;
+    if(key=='3') angleID=3;
+}
+void mouse(int button,int state,int x,int y)
+{
+    oldX=x;
+}
+void motion(int x,int y)
+{
+    angle[angleID]+=(x-oldX);
+    ///myWrite();
+    oldX=x;
+    glutPostRedisplay();
+}
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1,1,1);
+    glRectf(0.3,0.5, -0.3,-0.5);
+    glPushMatrix();
+        glTranslatef(0.3,0.4,0);
+        glRotatef(angle[0],0,0,1);
+        glTranslatef(-0.3,-0.4,0);
+        glColor3f(1,0,0);
+        glRectf(0.3,0.5, 0.7,0.3);
+        glPushMatrix();
+            glTranslatef(0.7,0.4,0);
+            glRotatef(angle[1],0,0,1);
+            glTranslatef(-0.7,-0.4,0);
+            glColor3f(0,1,0);
+            glRectf(0.7,0.5, 1.0,0.3);
+        glPopMatrix();
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-0.3,0.4,0);
+        glRotatef(angle[2],0,0,1);
+        glTranslatef(0.3,-0.4,0);
+        glColor3f(1,0,0);
+        glRectf(-0.3,0.5, -0.7,0.3);
+        glPushMatrix();
+            glTranslatef(-0.7,0.4,0);
+            glRotatef(angle[3],0,0,1);
+            glTranslatef(0.7,-0.4,0);
+            glColor3f(0,1,0);
+            glRectf(-0.7,0.5, -1.0,0.3);
+        glPopMatrix();
+    glPopMatrix();
+    glutSwapBuffers();
+}
+int main(int argc,char** argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    glutCreateWindow("week15 angle TRT again");
+    glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
+    glutDisplayFunc(display);
+    glutMainLoop();
+}
+```
+### 2.gluLookAt照相機
+
+eye相機放哪
+
+center相機固定頭動上下左右
+
+up相機橫拍直拍斜拍..
+
+
+
+### 3. aspect 長寬比例
+
+```c++
+#include <GL/glut.h>
+void reshape(int w, int h){
+    float ar=(float)w/(float)h;
+    glViewport(0,0,w,h);
+    glMatrixMode(GL_PROJECTION);///3D變2D
+    glLoadIdentity();
+    gluPerspective(60, ar,0.1,100);
+
+    glMatrixMode(GL_MODELVIEW);///3D Model+View
+    glLoadIdentity();
+    gluLookAt(0,0,3, ///eye
+              0,0,0, ///center看哪裡
+              0,1,0);///up
+}
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glutSolidTeapot(1);
+    glutSwapBuffers();
+}
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+
+    glutCreateWindow("week16 camera");
+
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutMainLoop();
+
+    return EXIT_SUCCESS;
+}
+```
+
+### 4.滑鼠左右運鏡
+```c++
+///能用左右運鏡
+#include <GL/glut.h>
+void reshape(int w, int h){
+    float ar=(float)w/(float)h;
+    glViewport(0,0,w,h);
+    glMatrixMode(GL_PROJECTION);///3D變2D
+    glLoadIdentity();
+    gluPerspective(60, ar,0.1,100);
+
+    glMatrixMode(GL_MODELVIEW);///3D Model+View
+    glLoadIdentity();
+    gluLookAt(0,0,3, ///eye
+              0,0,0, ///center看哪裡
+              0,1,0);///up
+}
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glutSolidTeapot(1);
+    glutSwapBuffers();
+    glutPostRedisplay();
+}
+void motion(int x, int y){
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt((x-150)/150.0,(y-150)/150.0,3, ///eye
+               0,0,0, ///center看哪裡
+               0,1,0);///up
+}
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    glutCreateWindow("week16 camera");
+    glutMotionFunc(motion);
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutMainLoop();
+
+    return EXIT_SUCCESS;
+}
+```
