@@ -2663,3 +2663,150 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 ```
+## 瘋狂無敵圖學死亡筆記 Week17
+### 0.複習
+```c++
+1.貼圖
+
+#include <opencv/highgui.h>
+
+#include <opencv/highgui.h> ///使用 OpenCV 2.1 比較簡單, 只要用 High GUI 即可
+
+#include <opencv/cv.h>
+
+int myTexture(char * filename)
+
+{
+
+    IplImage * img = cvLoadImage(filename);
+
+    cvCvtColor(img,img, CV_BGR2RGB);
+
+    glEnable(GL_TEXTURE_2D);
+
+    GLuint id;
+
+    glGenTextures(1, &id);
+
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
+
+    return id;
+
+}
+
+2.讀模型
+
+void myread(){
+
+    if(pmodel == NULL){
+
+        pmodel = glmReadOBJ("data/Gundam.obj");
+
+        glmUnitize(pmodel);
+
+        //glmScale(pmodel,1/26.0);
+
+        glmFacetNormals(pmodel);
+
+        glmVertexNormals(pmodel,90);
+
+    }
+
+}
+
+3.打光8
+
+const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+const GLfloat light_position[] = { 2.0f, 5.0f, 5.0f, 0.0f };
+
+
+
+const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
+
+const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
+
+const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+const GLfloat high_shininess[] = { 100.0f };
+
+
+
+/* Program entry point */
+
+void myLight(){ ///打光函式配合上面打光
+
+    glEnable(GL_DEPTH_TEST); ///3D測試功能
+
+    glDepthFunc(GL_LESS);
+
+
+
+    glEnable(GL_LIGHT0);
+
+    glEnable(GL_NORMALIZE);
+
+    glEnable(GL_COLOR_MATERIAL);
+
+    glEnable(GL_LIGHTING);
+
+
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
+
+    glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
+
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT,   mat_ambient);
+
+    glMaterialfv(GL_FRONT, GL_DIFFUSE,   mat_diffuse);
+
+    glMaterialfv(GL_FRONT, GL_SPECULAR,  mat_specular);
+
+    glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+
+}
+
+4.運鏡
+
+void reshape(int v, int h){
+
+    float ar = (float)v/(float)h;
+
+    glViewport(0,0,v,h);
+
+    glMatrixMode(GL_PROJECTION);
+
+    glLoadIdentity();
+
+    gluPerspective(60,ar,0.1,100.0);
+
+
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glLoadIdentity();
+
+    gluLookAt(0,0,2, 0,0,0, 0,1,0);
+
+}
+```
